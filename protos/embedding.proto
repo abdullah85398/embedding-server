@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package embedding;
+
+service EmbeddingService {
+  // Generate embeddings for a list of texts
+  rpc Embed (EmbedRequest) returns (EmbedResponse) {}
+  
+  // Bidirectional streaming for real-time embedding
+  rpc EmbedStream (stream EmbedRequest) returns (stream EmbedResponse) {}
+  
+  // Chunk text and generate embeddings
+  rpc ChunkAndEmbed (ChunkRequest) returns (ChunkResponse) {}
+}
+
+message Vector {
+  repeated float values = 1;
+}
+
+message EmbedRequest {
+  string model = 1;
+  repeated string input = 2;
+}
+
+message EmbedResponse {
+  string model = 1;
+  int32 dims = 2;
+  repeated Vector vectors = 3;
+}
+
+message ChunkRequest {
+  string model = 1;
+  repeated string input = 2;
+  string method = 3; // e.g., "token", "recursive"
+  int32 size = 4;
+  int32 overlap = 5;
+}
+
+message ChunkResponse {
+  string model = 1;
+  repeated string chunks = 2;
+  repeated Vector vectors = 3;
+}

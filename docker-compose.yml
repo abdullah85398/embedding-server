@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  embedding-server:
+    build: .
+    ports:
+      - "8000:8000"
+      - "50051:50051"
+    environment:
+      - API_KEY=${API_KEY:-changeme} # Security: Change this in production!
+      - MODEL_CONFIG_PATH=models.yaml
+    volumes:
+      - ./models.yaml:/app/models.yaml
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
