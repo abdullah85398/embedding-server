@@ -40,7 +40,7 @@ graph LR
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/embedding-server.git
+    git clone https://github.com/abdullah85398/embedding-server.git
     cd embedding-server
     ```
 
