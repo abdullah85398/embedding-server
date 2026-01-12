@@ -165,6 +165,18 @@ response = client.embeddings.create(
 print(response.data[0].embedding)
 ```
 
+## Documentation
+
+For a comprehensive guide on configuration, advanced features, and troubleshooting, please refer to the [User Guide](USER_GUIDE.md).
+
+## Example Scripts
+
+The repository includes several ready-to-run examples to help you get started:
+
+*   **[example_client.py](example_client.py)**: A complete demonstration of the HTTP API, including basic embedding, batching, smart chunking, and admin operations.
+*   **[example_grpc_client.py](example_grpc_client.py)**: Shows how to interact with the high-performance gRPC interface (Unary, Streaming, and Chunking).
+*   **[example_openai.py](example_openai.py)**: Demonstrates how to use the standard `openai` Python library to communicate with this server.
+
 ## Development
 
 ### Running Tests
@@ -196,4 +208,4 @@ ruff check .
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
