@@ -6,8 +6,11 @@ from app.middleware.rate_limit import RateLimitMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
 import logging
 import asyncio
+import os
 import grpc
 from app.grpc.interceptors import LoggingInterceptor
+
+import sys
 
 # Configure logging
 class EndpointFilter(logging.Filter):
@@ -17,7 +20,13 @@ class EndpointFilter(logging.Filter):
             return False
         return True
 
-logging.basicConfig(level=logging.INFO)
+# Configure root logger to output to stdout
+logging.basicConfig(
+    level=os.getenv("LOG_LEVEL", "INFO"),
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
 logger = logging.getLogger(__name__)
 logging.getLogger("uvicorn.access").addFilter(EndpointFilter())
 
@@ -50,18 +59,23 @@ async def serve_grpc():
     )
     reflection.enable_server_reflection(SERVICE_NAMES, server)
     
-    server.add_insecure_port('[::]:50051')
-    logger.info("Starting gRPC server on [::]:50051")
+    grpc_port = int(os.getenv("GRPC_PORT", 50051))
+    server.add_insecure_port(f'[::]:{grpc_port}')
+    logger.info(f"Starting gRPC server on [::]:{grpc_port}")
     await server.start()
     await server.wait_for_termination()
 
 async def main():
     import uvicorn
+    
+    http_port = int(os.getenv("PORT", 8000))
+    grpc_port = int(os.getenv("GRPC_PORT", 50051))
+
     # Use standard uvicorn configuration
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info")
+    config = uvicorn.Config(app, host="0.0.0.0", port=http_port, log_level="info")
     server = uvicorn.Server(config)
     
-    logger.info("Starting Dual-Protocol Server (HTTP: 8000, gRPC: 50051)")
+    logger.info(f"Starting Dual-Protocol Server (HTTP: {http_port}, gRPC: {grpc_port})")
     
     await asyncio.gather(
         server.serve(),

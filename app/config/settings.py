@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     app_name: str = "Embedding Server"
     
     # Auth Settings
-    auth_mode: AuthMode = AuthMode.KEY
+    auth_mode: AuthMode = AuthMode.NONE
     api_key: str = "changeme"
     
     # JWT Settings
